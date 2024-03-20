@@ -8,7 +8,7 @@ fn main() -> io::Result<()> {
     Ok(())
 }
 
-fn most_nutritious_inventories(data: &Vec<String>) -> io::Result<(i32, i32)> {
+fn most_nutritious_inventories(data: &[String]) -> io::Result<(i32, i32)> {
     let mut inventories = data
         .split(String::is_empty)
         .map(|chunk| {
@@ -48,7 +48,7 @@ fn test_example() {
         "9000",
         "",
         "10000",
-    ].map(str::to_string).to_vec();
+    ].map(str::to_string);
     let (max, sum) = most_nutritious_inventories(&example).unwrap();
     assert_eq!(24000, max);
     assert_eq!(45000, sum);
