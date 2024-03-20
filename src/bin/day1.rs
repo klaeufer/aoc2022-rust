@@ -1,23 +1,20 @@
 use std::{fs::File, io::{self, BufRead, BufReader}};
 
 fn main() -> io::Result<()> {
-    println!("Day 1 example (max, sum): {:?}", most_nutritious_inventories("data/day1example.txt")?);
-    println!("Day 1 solution (max, sum): {:?}", most_nutritious_inventories("data/day1input.txt")?);
+    let lines = BufReader::new(File::open("data/day1input.txt")?).lines();
+    let data = lines.map(|x| x.unwrap()).collect::<Vec<_>>();
+    let (max, sum) = most_nutritious_inventories(&data).unwrap();
+    println!("max: {}, sum: {}", max, sum);
     Ok(())
 }
 
-fn most_nutritious_inventories(filename: &str) -> io::Result<(i32, i32)> {
-    let file = File::open(filename)?;
-    let lines = BufReader::new(file)
-        .lines()
-        .collect::<Vec<_>>();
-
-    let mut inventories = lines
-        .split(|line| line.as_ref().unwrap().is_empty())
+fn most_nutritious_inventories(data: &Vec<String>) -> io::Result<(i32, i32)> {
+    let mut inventories = data
+        .split(|line| line.trim().is_empty())
         .map(|chunk| {
             chunk
                 .iter()
-                .map(|line| line.as_ref().unwrap().parse::<i32>().unwrap())
+                .map(|line| line.parse::<i32>().unwrap())
                 .sum::<i32>()
         })
         .collect::<Vec<_>>();
@@ -36,8 +33,23 @@ fn most_nutritious_inventories(filename: &str) -> io::Result<(i32, i32)> {
 
 #[test]
 fn test_example() {
-    // TODO refactor not to use IO
-    let (max, sum) = most_nutritious_inventories("data/day1example.txt").unwrap();
+    let example = [
+        "1000",
+        "2000",
+        "3000",
+        "",
+        "4000",
+        "",
+        "5000",
+        "6000",
+        "",
+        "7000",
+        "8000",
+        "9000",
+        "",
+        "10000",
+    ].map(str::to_string).to_vec();
+    let (max, sum) = most_nutritious_inventories(&example).unwrap();
     assert_eq!(24000, max);
     assert_eq!(45000, sum);
 }
