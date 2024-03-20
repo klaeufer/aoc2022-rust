@@ -2,7 +2,7 @@ use std::{fs::File, io::{self, BufRead, BufReader}};
 
 fn main() -> io::Result<()> {
     let lines = BufReader::new(File::open("data/day1input.txt")?).lines();
-    let data = lines.map(|x| x.unwrap()).collect::<Vec<_>>();
+    let data = lines.map(Result::unwrap).collect::<Vec<_>>();
     let (max, sum) = most_nutritious_inventories(&data).unwrap();
     println!("max: {}, sum: {}", max, sum);
     Ok(())
@@ -10,12 +10,12 @@ fn main() -> io::Result<()> {
 
 fn most_nutritious_inventories(data: &Vec<String>) -> io::Result<(i32, i32)> {
     let mut inventories = data
-        .split(|line| line.trim().is_empty())
+        .split(String::is_empty)
         .map(|chunk| {
             chunk
                 .iter()
                 .map(|line| line.parse::<i32>().unwrap())
-                .sum::<i32>()
+                .sum()
         })
         .collect::<Vec<_>>();
 
@@ -24,7 +24,7 @@ fn most_nutritious_inventories(data: &Vec<String>) -> io::Result<(i32, i32)> {
 
     Ok((
         inventories[0],
-        inventories.iter().take(3).sum::<i32>(),
+        inventories.iter().take(3).sum(),
     ))
 }
 
